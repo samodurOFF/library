@@ -1,5 +1,5 @@
 from django.contrib import admin
-from library.models.authors import Author
+from library.models import *
 
 
 
@@ -8,4 +8,8 @@ from library.models.authors import Author
 
 @admin.register(Author)
 class AuthorAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(Book)
+class BookAdmin(admin.ModelAdmin):
     pass
