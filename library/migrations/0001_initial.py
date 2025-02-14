@@ -8,25 +8,56 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Author',
+            name="Author",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('firstname', models.CharField(max_length=100, verbose_name='Имя')),
-                ('lastname', models.CharField(max_length=100, verbose_name='Фамилия')),
-                ('birth_date', models.DateField(verbose_name='Дата рождения')),
-                ('profile', models.URLField(blank=True, null=True, unique=True, verbose_name='Ссылка на профиль')),
-                ('is_deleted', models.BooleanField(default=False, help_text='True - пользователь удален. Он не будет отображаться на сайте', verbose_name='Удален')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('rate', models.PositiveSmallIntegerField(default=0, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(10)])),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("firstname", models.CharField(max_length=100, verbose_name="Имя")),
+                ("lastname", models.CharField(max_length=100, verbose_name="Фамилия")),
+                ("birth_date", models.DateField(verbose_name="Дата рождения")),
+                (
+                    "profile",
+                    models.URLField(
+                        blank=True,
+                        null=True,
+                        unique=True,
+                        verbose_name="Ссылка на профиль",
+                    ),
+                ),
+                (
+                    "is_deleted",
+                    models.BooleanField(
+                        default=False,
+                        help_text="True - пользователь удален. Он не будет отображаться на сайте",
+                        verbose_name="Удален",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "rate",
+                    models.PositiveSmallIntegerField(
+                        default=0,
+                        validators=[
+                            django.core.validators.MinValueValidator(0),
+                            django.core.validators.MaxValueValidator(10),
+                        ],
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('firstname', 'lastname', 'birth_date')},
+                "unique_together": {("firstname", "lastname", "birth_date")},
             },
         ),
     ]
