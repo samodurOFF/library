@@ -19,6 +19,6 @@ class CategoryAdmin(admin.ModelAdmin):
 class LibraryAdmin(admin.ModelAdmin):
     pass
 
-@admin.register(Publisher)
-class PublisherAdmin(admin.ModelAdmin):
+@admin.register(Member)
+class MemberAdmin(admin.ModelAdmin):
     pass

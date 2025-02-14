@@ -1,6 +1,5 @@
 from django.core.validators import MaxValueValidator
 from django.db import models
-
 from library.models.category import Category
 
 
@@ -20,7 +19,7 @@ class Book(models.Model):
     author_id = models.ForeignKey("Author", on_delete=models.SET_NULL, null=True)
     category_id = models.ForeignKey(Category, on_delete=models.SET_NULL, verbose_name='Category ID' ,null=True, related_name="books")
     publish_date = models.DateField()
-    publish_id = models.ForeignKey("Publisher", on_delete=models.SET_NULL, null=True)
+    publish_id = models.ForeignKey("Member", on_delete=models.SET_NULL, null=True)
     description = models.TextField(null=True, blank=True)
     genre = models.CharField(max_length=50, choices=CHOICES, null=True, blank=True)
     pages = models.IntegerField(
