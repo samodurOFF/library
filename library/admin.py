@@ -19,6 +19,25 @@ class CategoryAdmin(admin.ModelAdmin):
 class LibraryAdmin(admin.ModelAdmin):
     pass
 
-@admin.register(Publisher)
-class PublisherAdmin(admin.ModelAdmin):
-    pass
+@admin.register(Member)
+class MemberAdmin(admin.ModelAdmin):
+    fields = [
+        "name",
+        'surname',
+        'email',
+        'gender',
+        'birth_date',
+        'role',
+        'is_active',
+        'libraries',
+    ]
+
+    list_display = (
+        "name",
+        'surname',
+        'age',
+    )
+
+    class Meta:
+        model = Category
+        fields = "__all__"
