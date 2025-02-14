@@ -17,6 +17,7 @@ class Book(models.Model):
     )
     author_id = models.ForeignKey("Author", on_delete=models.SET_NULL, null=True)
     publish_date = models.DateField()
+    publish_id = models.ForeignKey("Publisher", on_delete=models.SET_NULL, null=True)
     description = models.TextField(null=True, blank=True)
     genre = models.CharField(max_length=50, choices=CHOICES, null=True, blank=True)
     pages = models.IntegerField(
