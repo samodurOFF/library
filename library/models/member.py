@@ -21,7 +21,7 @@ class Member(models.Model):
     email = models.EmailField(verbose_name="Email", unique=True)
     gender = models.CharField(choices=CHOICES_GENDER, verbose_name='Пол', max_length=50)
     birth_date = models.DateField(verbose_name='Дата рождения')
-    age = models.IntegerField()
+    age = models.IntegerField(blank=False, null=False)
     role = models.CharField(choices=CHOICES_ROLE, verbose_name='Роль', max_length=50)
     is_active = models.BooleanField(default=True)
     libraries = models.ManyToManyField(Library, related_name='members')

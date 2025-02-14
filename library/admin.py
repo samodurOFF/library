@@ -21,4 +21,23 @@ class LibraryAdmin(admin.ModelAdmin):
 
 @admin.register(Member)
 class MemberAdmin(admin.ModelAdmin):
-    pass
+    fields = [
+        "name",
+        'surname',
+        'email',
+        'gender',
+        'birth_date',
+        'role',
+        'is_active',
+        'libraries',
+    ]
+
+    list_display = (
+        "name",
+        'surname',
+        'age',
+    )
+
+    class Meta:
+        model = Category
+        fields = "__all__"

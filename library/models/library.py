@@ -9,3 +9,6 @@ class Library(models.Model):
 
     books = models.ManyToManyField(Book, related_name='libraries', blank=True, null=True)
 
+    def __str__(self):
+        return self.name
+
