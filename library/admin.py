@@ -13,6 +13,16 @@ class AuthorAdmin(admin.ModelAdmin):
     inlines = [BookInline]
     list_display = ('pk', 'firstname', 'lastname', 'birth_date', 'is_deleted')
     list_display_links = ('firstname', 'lastname')
+    actions = ['soft_delete', 'revival']
+
+
+    @admin.action(description="Мягкое удаление")
+    def soft_delete(self, request, obj):
+        obj.update(is_deleted=True)
+
+    @admin.action(description="Восстановление")
+    def revival(self, request, obj):
+        obj.update(is_deleted=False)
 
 
 @admin.register(Book)
