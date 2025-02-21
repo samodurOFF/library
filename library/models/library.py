@@ -7,8 +7,15 @@ class Library(models.Model):
     location = models.CharField(max_length=100)
     library_url = models.URLField(max_length=100, blank=True, null=True)
 
-    books = models.ManyToManyField(Book, related_name='libraries', blank=True, null=True)
+    books = models.ManyToManyField(Book, related_name='libraries', through='Collection', blank=True)
 
     def __str__(self):
         return self.name
+
+
+class Collection(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    library = models.ForeignKey(Library, on_delete=models.CASCADE)
+    received_date = models.DateField(auto_now_add=True)
+
 

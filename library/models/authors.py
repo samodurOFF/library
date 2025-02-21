@@ -23,5 +23,10 @@ class Author(models.Model):
     def __str__(self):
         return self.firstname + " " + self.lastname
 
+    def delete(self, using=None, keep_parents=False):
+        self.is_deleted = True
+        self.save()
+
+
     class Meta:
         unique_together = (("firstname", "lastname", "birth_date"),)
