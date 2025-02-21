@@ -2,9 +2,17 @@ from django.contrib import admin
 from library.models import *
 
 
+class BookInline(admin.StackedInline):
+    model = Book
+    extra = 1
+    classes = ['collapse']
+
+
 @admin.register(Author)
 class AuthorAdmin(admin.ModelAdmin):
-    pass
+    inlines = [BookInline]
+    list_display = ('pk', 'firstname', 'lastname', 'birth_date', 'is_deleted')
+    list_display_links = ('firstname', 'lastname')
 
 
 @admin.register(Book)
