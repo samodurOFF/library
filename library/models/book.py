@@ -16,10 +16,10 @@ class Book(models.Model):
         max_length=255,
         verbose_name="Название",
     )
-    author_id = models.ForeignKey("Author", verbose_name='Author', null=True, on_delete=models.CASCADE)
-    category_id = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='Category', null=True, related_name="books")
+    author = models.ForeignKey("Author", verbose_name='Author', null=True, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='Category', null=True, related_name="books")
     publish_date = models.DateField()
-    publish_id = models.ForeignKey("Member", on_delete=models.CASCADE, verbose_name='Publisher', null=True)
+    publish = models.ForeignKey("Member", on_delete=models.CASCADE, verbose_name='Publisher', null=True)
     description = models.TextField(null=True, blank=True)
     genre = models.CharField(max_length=50, choices=CHOICES, null=True, blank=True)
     pages = models.IntegerField(
