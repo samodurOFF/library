@@ -10,18 +10,15 @@ class BookListView(GenericAPIView):
     queryset = Book.objects.all()
     pagination_class = PageNumberPagination
     pagination_class.page_size = 5
-    page_size = pagination_class.page_size
 
     def get(self, request, *args, **kwargs):
         year = request.query_params.get('year')
         page_size = self.get_page_size(request)
+        self.pagination_class.page_size = page_size
 
         if year:
-            books = Book.objects.filter(publish_date__year=year)
-            serializer = self.get_serializer(books, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            self.queryset = self.queryset.filter(publish_date__year=year)
 
-        self.page_size = page_size  # Установка значения page_size
         results = self.paginate_queryset(self.get_queryset())
         serializer = self.get_serializer(results, many=True)
         return self.get_paginated_response(serializer.data)
@@ -30,7 +27,7 @@ class BookListView(GenericAPIView):
         page_size = request.query_params.get('page_size')
         if page_size and page_size.isdigit():
             return int(page_size)
-        return self.page_size  # Использование значения по умолчанию
+        return self.pagination_class.page_size  # Использование значения по умолчанию
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
