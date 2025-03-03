@@ -6,24 +6,25 @@ from rest_framework.views import APIView
 from library.models import Book
 from library.serializers import BookListSerializer, BookDetailSerializer, BookCreateSerializer
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.generics import GenericAPIView
 
 
-class BookListView(APIView, PageNumberPagination):
+class BookListView(GenericAPIView):
+    queryset = Book.objects.all()
+    pagination_class = PageNumberPagination
+    pagination_class.page_size = 5
     page_size = 5
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         year = request.query_params.get('year')
         page_size = self.get_page_size(request)
+        self.page_size = page_size
 
         if year:
-            books = Book.objects.filter(publish_date__year=year)
-            serializer = BookListSerializer(books, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            self.queryset = Book.objects.filter(publish_date__year=year)
 
-        books = Book.objects.all()
-        self.page_size = page_size  # Установка значения page_size
-        results = self.paginate_queryset(books, request, view=self)
-        serializer = BookDetailSerializer(results, many=True)
+        results = self.paginate_queryset(self.get_queryset())
+        serializer = self.get_serializer(results, many=True)
         return self.get_paginated_response(serializer.data)
 
     def get_page_size(self, request):
@@ -38,6 +39,13 @@ class BookListView(APIView, PageNumberPagination):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get_serializer_class(self):
+
+        if self.request.method == 'GET':
+            return BookDetailSerializer
+        elif self.request.method == 'POST':
+            return BookCreateSerializer
 
 
 class BookDetailView(APIView):
