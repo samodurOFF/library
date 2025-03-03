@@ -1,6 +1,10 @@
+from django.utils import timezone
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
-from library.models import Book
-from library.serializers import BookListSerializer, BookDetailSerializer, BookCreateSerializer
+from library.models import Book, Author, Category
+from library.serializers import BookListSerializer, BookDetailSerializer, BookCreateSerializer, AuthorSerializer, \
+    CategorySerializer
 from rest_framework.pagination import PageNumberPagination
 
 
@@ -8,6 +12,11 @@ class BookListView(ListCreateAPIView):
     queryset = Book.objects.all()
     pagination_class = PageNumberPagination
     page_size = 5
+
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['author', 'publish']
+    search_fields = ['title', 'author__firstname', 'author__lastname']
+    ordering_fields = ['publish_date']
 
     def get_page_size(self, request):
         page_size = request.query_params.get('page_size')
@@ -35,3 +44,14 @@ class BookListView(ListCreateAPIView):
 class BookDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Book.objects.all()
     serializer_class = BookDetailSerializer
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['current_time'] = timezone.now().date()
+        return context
+
+class CategoryDetailUpdateDeleteView(RetrieveUpdateDestroyAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    lookup_field  = 'name'
+
