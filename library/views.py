@@ -47,7 +47,7 @@ class BookDetailView(RetrieveUpdateDestroyAPIView):
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        context['current_time'] = timezone.now().date()
+        context['current_time'] = timezone.now().strftime('%Y-%m-%d %H:%M:%S')
         return context
 
 class CategoryDetailUpdateDeleteView(RetrieveUpdateDestroyAPIView):
