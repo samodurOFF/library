@@ -1,6 +1,6 @@
 from django.utils import timezone
 from rest_framework import serializers
-from .models import Book, Author, Member, Library
+from .models import Book, Author, Member, Library, Category
 
 
 class AuthorSerializer(serializers.ModelSerializer):
@@ -16,7 +16,7 @@ class LibrarySerializer(serializers.ModelSerializer):
 
 
 class BookListSerializer(serializers.ModelSerializer):
-    # author = AuthorSerializer()
+    author = AuthorSerializer()
 
     class Meta:
         model = Book
@@ -32,8 +32,19 @@ class BookDetailSerializer(serializers.ModelSerializer):
         model = Book
         fields = '__all__'
 
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        ret.setdefault('current_time', instance.current_time)
+        return ret
 
 class BookCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = ['title', 'author', 'publish_date']
+
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = "__all__"
