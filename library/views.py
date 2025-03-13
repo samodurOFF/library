@@ -51,6 +51,6 @@ class BookDetailView(RetrieveUpdateDestroyAPIView):
         return context
 
 
-class CategoryDetailUpdateDeleteView(viewsets.ReadOnlyModelViewSet):
+class CategoryDetailUpdateDeleteView(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
