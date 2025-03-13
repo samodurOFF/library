@@ -51,11 +51,6 @@ class BookDetailView(RetrieveUpdateDestroyAPIView):
         return context
 
 
-class CategoryDetailUpdateDeleteView(mixins.UpdateModelMixin,
-                                     mixins.RetrieveModelMixin,
-                                     mixins.ListModelMixin,
-                                     viewsets.GenericViewSet
-                                     ):
+class CategoryDetailUpdateDeleteView(viewsets.ReadOnlyModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    # lookup_field  = 'name'
