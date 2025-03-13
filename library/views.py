@@ -1,7 +1,11 @@
+from django.db.models import Count
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, viewsets
+from rest_framework.decorators import action
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
+from rest_framework.response import Response
+
 from library.models import Book, Author, Category
 from library.serializers import BookListSerializer, BookDetailSerializer, BookCreateSerializer, AuthorSerializer, \
     CategorySerializer
@@ -54,3 +58,22 @@ class BookDetailView(RetrieveUpdateDestroyAPIView):
 class CategoryDetailUpdateDeleteView(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+
+    @action(detail=False, methods=['get'])
+    def all_statistic(self, request):
+        categories_with_book_counts = Category.objects.annotate(book_count=Count('books'))
+        data = [
+            {
+                "id": category.id,
+                "category": category.name,
+                "book_count": category.book_count
+            }
+            for category in categories_with_book_counts
+        ]
+        return Response(data)
+
+    @action(detail=True, methods=['get'])
+    def statistic(self, request, pk=None):
+        categories_with_book_counts = Category.objects.get(pk=pk)
+        return Response(self.get_serializer(categories_with_book_counts).data)
+
