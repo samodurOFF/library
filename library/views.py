@@ -1,6 +1,6 @@
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters
+from rest_framework import filters, mixins, viewsets
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
 from library.models import Book, Author, Category
 from library.serializers import BookListSerializer, BookDetailSerializer, BookCreateSerializer, AuthorSerializer, \
@@ -50,8 +50,12 @@ class BookDetailView(RetrieveUpdateDestroyAPIView):
         context['current_time'] = timezone.now().strftime('%Y-%m-%d %H:%M:%S')
         return context
 
-class CategoryDetailUpdateDeleteView(RetrieveUpdateDestroyAPIView):
+
+class CategoryDetailUpdateDeleteView(mixins.UpdateModelMixin,
+                                     mixins.RetrieveModelMixin,
+                                     mixins.ListModelMixin,
+                                     viewsets.GenericViewSet
+                                     ):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    lookup_field  = 'name'
-
+    # lookup_field  = 'name'
