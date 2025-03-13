@@ -3,7 +3,7 @@
 from django.utils import timezone
 
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import status, filters
+from rest_framework import status, filters, mixins, viewsets
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
 from rest_framework.response import Response
 from library.models import Book, Category
@@ -77,10 +77,10 @@ class BookDetailView(RetrieveUpdateDestroyAPIView):
 
 
 
-class CategoryView(RetrieveUpdateDestroyAPIView):
+class CategoryView(mixins.UpdateModelMixin, mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    lookup_field = 'name'
+    # lookup_field = 'name'
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
