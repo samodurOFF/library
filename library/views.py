@@ -87,3 +87,4 @@ class CategoryView(RetrieveUpdateDestroyAPIView):
         context['current_time'] = timezone.now().strftime('%Y-%m-%d %H:%M:%S')
         return context
 
+
