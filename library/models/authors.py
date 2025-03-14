@@ -30,3 +30,4 @@ class Author(models.Model):
 
     class Meta:
         unique_together = (("firstname", "lastname", "birth_date"),)
+        db_table = 'authors'

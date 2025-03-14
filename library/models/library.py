@@ -12,10 +12,14 @@ class Library(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        db_table = 'libraries'
+
 
 class Collection(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     library = models.ForeignKey(Library, on_delete=models.CASCADE)
     received_date = models.DateField(auto_now_add=True)
 
-
+    class Meta:
+        db_table = 'collections'

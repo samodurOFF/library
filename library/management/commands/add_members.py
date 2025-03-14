@@ -5,6 +5,7 @@ from datetime import date
 
 fake = Faker()
 
+
 class Command(BaseCommand):
     help = 'Заполняет таблицу членов библиотеки случайными данными'
 
@@ -18,8 +19,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         count = kwargs['count']
-        libraries = Library.objects.all()
-
         for _ in range(count):
             member = Member(
                 name=fake.first_name(),
@@ -30,8 +29,4 @@ class Command(BaseCommand):
                 role=fake.random_element(Member.CHOICES_ROLE)[0],
                 is_active=fake.boolean(),
             )
-            member.save()
-
-
-            member.libraries.set(fake.random_elements(libraries, length=2))
             member.save()

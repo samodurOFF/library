@@ -17,9 +17,10 @@ class Book(models.Model):
         verbose_name="Название",
     )
     author = models.ForeignKey("Author", verbose_name='Author', null=True, on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='Category', null=True, related_name="books")
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='Category', null=True,
+                                 related_name="books")
     publish_date = models.DateField()
-    publish = models.ForeignKey("Member", on_delete=models.CASCADE, verbose_name='Publisher', null=True)
+    publish = models.ForeignKey("Member", on_delete=models.CASCADE, verbose_name='Publisher', null=True, db_column='publish')
     description = models.TextField(null=True, blank=True)
     genre = models.CharField(max_length=50, choices=CHOICES, null=True, blank=True)
     pages = models.IntegerField(
@@ -28,3 +29,6 @@ class Book(models.Model):
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        db_table = 'books'

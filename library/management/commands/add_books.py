@@ -2,8 +2,8 @@ from django.core.management.base import BaseCommand
 from library.models import Book, Author, Category, Member
 from faker import Faker
 
-
 fake = Faker()
+
 
 class Command(BaseCommand):
     help = 'Заполняет таблицу книг случайными данными'
@@ -23,16 +23,16 @@ class Command(BaseCommand):
         members = Member.objects.all()
 
         for _ in range(count):
-            author = authors[fake.random_int(0, len(authors)-1)]
-            category = categories[fake.random_int(0, len(categories)-1)]
-            member = members[fake.random_int(0, len(members)-1)]
+            author = authors[fake.random_int(0, len(authors) - 1)]
+            category = categories[fake.random_int(0, len(categories) - 1)]
+            member = members[fake.random_int(0, len(members) - 1)]
 
             book = Book(
                 title=fake.sentence(nb_words=4),
-                author_id=author,
-                category_id=category,
+                author_id=author.id,
+                category_id=category.id,
                 publish_date=fake.date_this_century(),
-                publish_id=member,
+                publish_id=member.id,
                 description=fake.text(),
                 genre=fake.random_element(Book.CHOICES)[0],
                 pages=fake.random_int(100, 1000),

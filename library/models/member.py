@@ -32,8 +32,9 @@ class Member(models.Model):
                 (today.month, today.day) < (self.birth_date.month, self.birth_date.day))
         super().save(*args, **kwargs)
 
-    class Meta:
-        unique_together = (('name', 'surname', 'birth_date'),)
-
     def __str__(self):
         return self.name + " " + self.surname
+
+    class Meta:
+        unique_together = (('name', 'surname', 'birth_date'),)
+        db_table = 'members'

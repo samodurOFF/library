@@ -1,8 +1,9 @@
 from django.core.management.base import BaseCommand
 from faker import Faker
-from library.models import Library, Book
+from library.models import Library, Member
 
 fake = Faker()
+
 
 class Command(BaseCommand):
     help = 'Заполняет таблицу библиотек случайными данными'
@@ -24,9 +25,3 @@ class Command(BaseCommand):
                 library_url=fake.url(),
             )
             library.save()
-
-
-            books = Book.objects.all()
-            library.books.set(fake.random_elements(books, length=5))
-            library.save()
-
