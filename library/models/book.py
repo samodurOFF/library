@@ -12,10 +12,12 @@ class Book(models.Model):
         ("mystery", "Mystery"),
         ("biography", "Biography"),
     )
+
     title = models.CharField(
         max_length=255,
         verbose_name="Название",
     )
+    
     author = models.ForeignKey("Author", verbose_name='Author', null=True, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='Category', null=True, related_name="books")
     publish_date = models.DateField()
