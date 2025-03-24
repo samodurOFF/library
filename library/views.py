@@ -9,17 +9,10 @@ from rest_framework.response import Response
 from library.models import Book, Author, Category
 from library.serializers import BookListSerializer, BookDetailSerializer, BookCreateSerializer, AuthorSerializer, \
     CategorySerializer
-from rest_framework.pagination import CursorPagination, PageNumberPagination
-
-
-class BookPagination(PageNumberPagination, CursorPagination):
-    page_size = 5
-    ordering = '-publish_date'
 
 
 class BookListView(ListCreateAPIView):
     queryset = Book.objects.all()
-    pagination_class = BookPagination
 
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['author', 'publish']
