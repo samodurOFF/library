@@ -9,14 +9,13 @@ from rest_framework.response import Response
 from library.models import Book, Author, Category
 from library.serializers import BookListSerializer, BookDetailSerializer, BookCreateSerializer, AuthorSerializer, \
     CategorySerializer
-from rest_framework.pagination import PageNumberPagination
+from rest_framework.pagination import CursorPagination, PageNumberPagination
 
 
+class BookPagination(PageNumberPagination, CursorPagination):
+    page_size = 5
+    ordering = '-publish_date'
 
-class BookPagination(PageNumberPagination):
-    page_size = 10
-    page_size_query_param = 'page_size'
-    max_page_size = 1000
 
 class BookListView(ListCreateAPIView):
     queryset = Book.objects.all()
@@ -31,9 +30,7 @@ class BookListView(ListCreateAPIView):
         year = self.request.query_params.get('year')
         if year:
             queryset = queryset.filter(publish_date__year=year)
-
         return queryset
-
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
@@ -73,4 +70,3 @@ class CategoryDetailUpdateDeleteView(viewsets.ModelViewSet):
     def statistic(self, request, pk=None):
         categories_with_book_counts = Category.objects.get(pk=pk)
         return Response(self.get_serializer(categories_with_book_counts).data)
-
