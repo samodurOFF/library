@@ -12,31 +12,28 @@ from library.serializers import BookListSerializer, BookDetailSerializer, BookCr
 from rest_framework.pagination import PageNumberPagination
 
 
+
+class BookPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 1000
+
 class BookListView(ListCreateAPIView):
     queryset = Book.objects.all()
-    pagination_class = PageNumberPagination
-    page_size = 5
+    pagination_class = BookPagination
 
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['author', 'publish']
     search_fields = ['title', 'author__firstname', 'author__lastname']
     ordering_fields = ['publish_date']
 
-    def get_page_size(self, request):
-        page_size = request.query_params.get('page_size')
-        if page_size and page_size.isdigit():
-            return int(page_size)
-        return self.page_size
-
-    def get_queryset(self):
-        page_size = self.get_page_size(self.request)
-        self.pagination_class.page_size = page_size
+    def filter_queryset(self, queryset):
         year = self.request.query_params.get('year')
-        queryset = super().get_queryset()
         if year:
             queryset = queryset.filter(publish_date__year=year)
 
-        return queryset.order_by('pk')
+        return queryset
+
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
