@@ -1,4 +1,5 @@
 from django.db.models import Count
+from django.template.context_processors import request
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, viewsets
@@ -14,11 +15,16 @@ from library.serializers import BookListSerializer, BookDetailSerializer, BookCr
 
 class BookListView(ListCreateAPIView):
     queryset = Book.objects.all()
-    permission_classes = [IsAdminUser]
+    # permission_classes = [IsAdminUser]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['author', 'publish']
     search_fields = ['title', 'author__firstname', 'author__lastname']
     ordering_fields = ['publish_date']
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return super().get_permissions()
+        return [IsAdminUser()]
 
     def filter_queryset(self, queryset):
         year = self.request.query_params.get('year')
