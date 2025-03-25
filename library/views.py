@@ -4,6 +4,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
+from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 
 from library.models import Book, Author, Category
@@ -13,7 +14,7 @@ from library.serializers import BookListSerializer, BookDetailSerializer, BookCr
 
 class BookListView(ListCreateAPIView):
     queryset = Book.objects.all()
-
+    permission_classes = [IsAdminUser]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['author', 'publish']
     search_fields = ['title', 'author__firstname', 'author__lastname']
