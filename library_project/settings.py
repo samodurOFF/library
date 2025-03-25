@@ -137,7 +137,11 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'library.pagination.BookPagination',
-    'PAGE_SIZE': 5,  # Размер страницы по умолчанию
+    'PAGE_SIZE': 5,
+    'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework.authentication.SessionAuthentication'],
+    'DEFAULT_PERMISSION_CLASSES': [
+'rest_framework.permissions.IsAuthenticated',
+],
 }
 
 LOGGING = {
@@ -161,3 +165,4 @@ LOGGING = {
         },
     },
 }
+
