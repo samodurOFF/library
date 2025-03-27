@@ -9,3 +9,6 @@ class Category(models.Model):
 
     class Meta:
         db_table = 'categories'
+        permissions = [
+            ("can_get_statistic", "Can get genres statistic"),
+        ]

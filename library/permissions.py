@@ -25,3 +25,8 @@ class CustomModelPermissions(DjangoModelPermissions):
         'PATCH': ['%(app_label)s.change_%(model_name)s'],
         'DELETE': ['%(app_label)s.delete_%(model_name)s'],
     }
+
+
+class StatisticCategoryPermissions(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.has_perm('library.can_get_statistic')

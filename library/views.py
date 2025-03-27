@@ -1,6 +1,8 @@
+from django.contrib.auth.decorators import permission_required
 from django.db.models import Count
 from django.template.context_processors import request
 from django.utils import timezone
+from django.utils.decorators import method_decorator
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, viewsets
 from rest_framework.decorators import action
@@ -9,7 +11,7 @@ from rest_framework.permissions import IsAdminUser, DjangoModelPermissions
 from rest_framework.response import Response
 
 from library.models import Book, Author, Category
-from library.permissions import OwnerOrReadOnly, IsWorkHour, CustomModelPermissions
+from library.permissions import OwnerOrReadOnly, IsWorkHour, CustomModelPermissions, StatisticCategoryPermissions
 from library.serializers import BookListSerializer, BookDetailSerializer, BookCreateSerializer, AuthorSerializer, \
     CategorySerializer
 
@@ -41,6 +43,10 @@ class BookListView(ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
+    # @method_decorator(permission_required('library.can_get_statistic', raise_exception=True))
+    # def list(self, request, *args, **kwargs):
+    #     return super().list(request, *args, **kwargs)
+
 
 class BookDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Book.objects.all()
@@ -66,7 +72,7 @@ class CategoryDetailUpdateDeleteView(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
     permission_classes = [CustomModelPermissions]
 
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], permission_classes=[StatisticCategoryPermissions])
     def all_statistic(self, request):
         categories_with_book_counts = Category.objects.annotate(book_count=Count('books'))
         data = [
@@ -79,7 +85,8 @@ class CategoryDetailUpdateDeleteView(viewsets.ModelViewSet):
         ]
         return Response(data)
 
-    @action(detail=True, methods=['get'])
+    @action(detail=True, methods=['get'], permission_classes = [StatisticCategoryPermissions])
     def statistic(self, request, pk=None):
         categories_with_book_counts = Category.objects.get(pk=pk)
         return Response(self.get_serializer(categories_with_book_counts).data)
+
