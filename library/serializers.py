@@ -23,10 +23,11 @@ class LibrarySerializer(serializers.ModelSerializer):
 
 class BookListSerializer(serializers.ModelSerializer):
     # author = AuthorSerializer()
+    owner = serializers.SlugRelatedField(slug_field='username', read_only=True)
 
     class Meta:
         model = Book
-        fields = ['id', 'title', 'author', 'publish_date']
+        fields = ['id', 'title', 'author', 'publish_date', 'owner']
         read_only_fields = ['publish_date']
 
 
@@ -45,6 +46,8 @@ class BookDetailSerializer(serializers.ModelSerializer):
 
 
 class BookCreateSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Book
         fields = ['title', 'author', 'publish_date']
+        read_only_fields = ['owner']

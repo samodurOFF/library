@@ -1,5 +1,8 @@
+from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator
 from django.db import models
+from django.db.models import ForeignKey
+
 from library.models.category import Category
 
 
@@ -26,6 +29,7 @@ class Book(models.Model):
     pages = models.IntegerField(
         null=True, blank=True, validators=[MaxValueValidator(1000)]
     )
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, verbose_name='Owner', related_name='books', null=True, blank=True)
 
     def __str__(self):
         return self.title

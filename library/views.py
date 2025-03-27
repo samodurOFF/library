@@ -38,6 +38,9 @@ class BookListView(ListCreateAPIView):
         elif self.request.method == 'GET':
             return BookListSerializer
 
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
 
 class BookDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Book.objects.all()
