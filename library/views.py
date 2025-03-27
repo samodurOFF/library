@@ -51,6 +51,12 @@ class BookDetailView(RetrieveUpdateDestroyAPIView):
         context['current_time'] = timezone.now().strftime('%Y-%m-%d %H:%M:%S')
         return context
 
+class UserListView(ListAPIView):
+    serializer_class = BookListSerializer
+
+    def get_queryset(self):
+        return Book.objects.filter(owner=self.request.user)
+
 
 class CategoryDetailUpdateDeleteView(viewsets.ModelViewSet):
     queryset = Category.objects.all()
