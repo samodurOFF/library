@@ -5,17 +5,17 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAdminUser, DjangoModelPermissions
 from rest_framework.response import Response
 
 from library.models import Book, Author, Category
+from library.permissions import OwnerOrReadOnly, IsWorkHour, CustomModelPermissions
 from library.serializers import BookListSerializer, BookDetailSerializer, BookCreateSerializer, AuthorSerializer, \
     CategorySerializer
 
 
 class BookListView(ListCreateAPIView):
     queryset = Book.objects.all()
-    # permission_classes = [IsAdminUser]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['author', 'publish']
     search_fields = ['title', 'author__firstname', 'author__lastname']
@@ -45,11 +45,14 @@ class BookListView(ListCreateAPIView):
 class BookDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Book.objects.all()
     serializer_class = BookDetailSerializer
+    permission_classes = [IsAdminUser, OwnerOrReadOnly]
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context['current_time'] = timezone.now().strftime('%Y-%m-%d %H:%M:%S')
         return context
+
+
 
 class UserListView(ListAPIView):
     serializer_class = BookListSerializer
@@ -61,6 +64,7 @@ class UserListView(ListAPIView):
 class CategoryDetailUpdateDeleteView(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    permission_classes = [CustomModelPermissions]
 
     @action(detail=False, methods=['get'])
     def all_statistic(self, request):

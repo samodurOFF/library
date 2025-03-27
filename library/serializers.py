@@ -1,6 +1,5 @@
-from django.utils import timezone
 from rest_framework import serializers
-from .models import Book, Author, Member, Library, Category
+from .models import Book, Author, Library, Category
 
 
 class AuthorSerializer(serializers.ModelSerializer):
@@ -34,6 +33,7 @@ class BookListSerializer(serializers.ModelSerializer):
 class BookDetailSerializer(serializers.ModelSerializer):
     author = serializers.PrimaryKeyRelatedField(queryset=Author.objects.all())
     libraries = serializers.PrimaryKeyRelatedField(read_only=True, many=True)
+    owner = serializers.SlugRelatedField(slug_field='username', read_only=True)
 
     class Meta:
         model = Book
@@ -46,6 +46,7 @@ class BookDetailSerializer(serializers.ModelSerializer):
 
 
 class BookCreateSerializer(serializers.ModelSerializer):
+    owner = serializers.SlugRelatedField(slug_field='username', read_only=True)
 
     class Meta:
         model = Book
