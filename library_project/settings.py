@@ -150,7 +150,7 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',
     ],
 }
 
@@ -183,3 +183,12 @@ SIMPLE_JWT = {
 #         },
 #     },
 # }
+
+#
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# # 'django.core.mail.backends.smtp.EmailBackend' # email
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'your_email@gmail.com'
+# EMAIL_HOST_PASSWORD = 'your_password'

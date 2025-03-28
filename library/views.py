@@ -66,10 +66,10 @@ class BookListView(ListCreateAPIView):
     search_fields = ['title', 'author__firstname', 'author__lastname']
     ordering_fields = ['publish_date']
 
-    def get_permissions(self):
-        if self.request.method == 'GET':
-            return super().get_permissions()
-        return [IsAdminUser()]
+    # def get_permissions(self):
+    #     if self.request.method == 'GET':
+    #         return super().get_permissions()
+    #     return [IsAdminUser()]
 
     def filter_queryset(self, queryset):
         year = self.request.query_params.get('year')
