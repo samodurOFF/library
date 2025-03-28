@@ -1,19 +1,60 @@
+from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import permission_required
 from django.db.models import Count
 from django.template.context_processors import request
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, mixins, viewsets
-from rest_framework.decorators import action
+from rest_framework import filters, mixins, viewsets, status
+from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
-from rest_framework.permissions import IsAdminUser, DjangoModelPermissions
+from rest_framework.permissions import IsAdminUser, DjangoModelPermissions, AllowAny
 from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from library.models import Book, Author, Category
 from library.permissions import OwnerOrReadOnly, IsWorkHour, CustomModelPermissions, StatisticCategoryPermissions
 from library.serializers import BookListSerializer, BookDetailSerializer, BookCreateSerializer, AuthorSerializer, \
     CategorySerializer
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def login(request):
+    password = request.data.get('password')
+    username = request.data.get('username')
+    user = authenticate(request, username=username, password=password)
+    if user:
+        refresh_token = RefreshToken.for_user(user)
+        access_token = refresh_token.access_token
+        end_date_refresh_token = refresh_token['exp'] - timezone.now().timestamp()
+        end_date_access_token = access_token['exp'] - timezone.now().timestamp()
+        response = Response(status=status.HTTP_200_OK)
+        response.set_cookie(
+            key='access_token',
+            value=str(access_token),
+            httponly=True,
+            secure=False,
+            samesite='Lax',
+            max_age = end_date_access_token
+        )
+        response.set_cookie(
+            key='refresh_token',
+            value=str(refresh_token),
+            httponly=True,
+            secure=False,
+            samesite='Lax',
+            max_age = end_date_refresh_token
+        )
+        return response
+    return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+@api_view(['GET'])
+def logout(request, *args, **kwargs):
+    response = Response(status=status.HTTP_204_NO_CONTENT)
+    response.delete_cookie('access_token')
+    response.delete_cookie('refresh_token')
+    return response
 
 
 class BookListView(ListCreateAPIView):
