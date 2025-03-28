@@ -1,4 +1,6 @@
 from rest_framework import serializers
+from rest_framework.authtoken.admin import User
+
 from .models import Book, Author, Library, Category
 
 
@@ -52,3 +54,21 @@ class BookCreateSerializer(serializers.ModelSerializer):
         model = Book
         fields = ['title', 'author', 'publish_date', 'owner']
         read_only_fields = ['owner']
+
+
+
+
+class UserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+    class Meta:
+        model = User
+        fields = ( 'username', 'password')
+
+
+
+
+
+
+
+
+

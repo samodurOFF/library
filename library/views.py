@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.models import User
 from django.db.models import Count
 from django.template.context_processors import request
 from django.utils import timezone
@@ -15,7 +16,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from library.models import Book, Author, Category
 from library.permissions import OwnerOrReadOnly, IsWorkHour, CustomModelPermissions, StatisticCategoryPermissions
 from library.serializers import BookListSerializer, BookDetailSerializer, BookCreateSerializer, AuthorSerializer, \
-    CategorySerializer
+    CategorySerializer, UserSerializer
+from library.utils import set_jwt_cookies
 
 
 @api_view(['POST'])
@@ -131,3 +133,20 @@ class CategoryDetailUpdateDeleteView(viewsets.ModelViewSet):
         categories_with_book_counts = Category.objects.get(pk=pk)
         return Response(self.get_serializer(categories_with_book_counts).data)
 
+
+
+class RegisterView(ListCreateAPIView):
+    queryset = User.objects.all()
+    permission_classes = [AllowAny]
+    serializer_class = UserSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            response = Response(
+                serializer.data, status=status.HTTP_201_CREATED)
+            set_jwt_cookies(response, user)
+            return response
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
